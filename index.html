@@ -3,112 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SwissForge | Generative Design Tool</title>
+    <title>SwissForge | Grid Layout Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Space Grotesk', sans-serif; }
-        .swiss-headline { font-family: 'Inter', sans-serif; line-height: 0.85; letter-spacing: -0.05em; }
-        .poster-canvas { transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-        .grid-line { pointer-events: none; border-color: rgba(0,0,0,0.05); }
+        .swiss-headline { font-family: 'Inter', sans-serif; line-height: 0.9; letter-spacing: -0.04em; }
+        
+        /* The "Skeleton" Grid Styles */
+        .poster-grid {
+            display: grid;
+            gap: 1.5rem;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Generated Grid Templates */
+        .grid-style-1 { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; }
+        .grid-style-2 { grid-template-columns: 1fr 2fr; grid-template-rows: 1fr 1fr; }
+        .grid-style-3 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto 1fr; }
+
+        .placeholder-img { background-color: #d1d5db; position: relative; overflow: hidden; }
+        .placeholder-img::after { 
+            content: "IMG"; position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); color: rgba(0,0,0,0.2); font-weight: bold; font-size: 10px;
+        }
+        
+        .poster-canvas { transition: all 0.4s ease-in-out; }
     </style>
 </head>
-<body class="bg-zinc-100 text-zinc-900 min-h-screen overflow-hidden flex">
+<body class="bg-zinc-200 text-zinc-900 h-screen flex">
 
-    <aside class="w-80 border-r border-zinc-300 bg-white p-8 flex flex-col shadow-2xl z-10">
+    <aside class="w-80 border-r border-zinc-300 bg-white p-8 flex flex-col shadow-2xl z-20">
         <header class="mb-10">
-            <h1 class="text-2xl font-black tracking-tighter">SWISSFORGE</h1>
-            <p class="text-[10px] text-zinc-400 uppercase font-bold tracking-widest mt-1">Generative Layout Engine</p>
+            <h1 class="text-2xl font-black italic tracking-tighter">SWISSFORGE</h1>
+            <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.2em] mt-1">Grid Layout Generator</p>
         </header>
 
-        <div class="space-y-8 flex-1">
+        <div class="space-y-6 flex-1">
             <div>
-                <label class="text-[10px] font-bold uppercase text-zinc-400">Headline Text</label>
-                <input type="text" id="headlineInput" value="DESIGN IS FORM" class="w-full border-b-2 border-zinc-900 py-2 text-xl font-bold outline-none uppercase">
+                <label class="text-[10px] font-bold uppercase text-zinc-500 block mb-2">Primary Text</label>
+                <input type="text" id="mainText" value="Grid System" class="w-full bg-zinc-50 border border-zinc-300 p-3 text-sm font-bold outline-none uppercase focus:border-zinc-900">
             </div>
 
-            <div>
-                <label class="text-[10px] font-bold uppercase text-zinc-400">Primary Color</label>
-                <div class="grid grid-cols-4 gap-2 mt-2">
-                    <button onclick="changeColor('#EF4444')" class="h-8 bg-red-500 rounded-full"></button>
-                    <button onclick="changeColor('#3B82F6')" class="h-8 bg-blue-500 rounded-full"></button>
-                    <button onclick="changeColor('#10B981')" class="h-8 bg-emerald-500 rounded-full"></button>
-                    <button onclick="changeColor('#F59E0B')" class="h-8 bg-amber-500 rounded-full"></button>
-                </div>
-            </div>
-
-            <div class="pt-8 border-t border-zinc-100">
-                <button onclick="generateLayout()" class="w-full bg-zinc-900 text-white py-4 rounded-full font-bold hover:scale-105 transition-transform shadow-xl">
-                    REGENERATE LAYOUT
-                </button>
-            </div>
+            <button onclick="generate()" class="w-full bg-zinc-900 text-white py-4 rounded-lg font-bold hover:bg-black transition-all active:scale-95 shadow-lg">
+                NEW RANDOM GRID
+            </button>
         </div>
 
-        <footer class="mt-auto">
-            <p class="text-[9px] text-zinc-400 leading-relaxed italic">Built for Project 2: Computational Design. Layouts are generated using randomized asymmetric grid nodes.</p>
-        </footer>
+        <div class="pt-6 border-t border-zinc-100 text-[10px] text-zinc-400 leading-relaxed italic">
+            Swiss design focuses on asymmetric balance and mathematically structured grids.
+        </div>
     </aside>
 
-    <main class="flex-1 flex flex-col items-center justify-center p-12 relative overflow-hidden bg-[#e2e2e2]">
-        
-        <div id="poster" class="poster-canvas w-[500px] h-[700px] bg-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] p-12 grid relative overflow-hidden">
-            <div class="absolute inset-0 grid grid-cols-4 grid-rows-6 pointer-events-none">
-                <div class="grid-line border-r border-b"></div><div class="grid-line border-r border-b"></div><div class="grid-line border-r border-b"></div><div class="grid-line border-b"></div>
+    <main class="flex-1 flex items-center justify-center p-12 bg-zinc-100 relative">
+        <div id="poster" class="poster-canvas w-[480px] h-[640px] bg-white shadow-2xl p-8 border border-zinc-200 relative">
+            <div id="gridTarget" class="poster-grid">
                 </div>
-
-            <div id="layoutTarget" class="z-10 h-full w-full"></div>
         </div>
-
     </main>
 
     <script>
-        let primaryColor = '#EF4444';
-
-        function changeColor(c) {
-            primaryColor = c;
-            generateLayout();
-        }
-
-        function generateLayout() {
-            const headline = document.getElementById('headlineInput').value;
-            const target = document.getElementById('layoutTarget');
+        function generate() {
+            const text = document.getElementById('mainText').value || "SWISS";
+            const target = document.getElementById('gridTarget');
             
-            // Random Swiss Logic
-            const alignments = ['text-left', 'text-right'];
-            const randomAlign = alignments[Math.floor(Math.random() * alignments.length)];
-            const randomGridStart = Math.floor(Math.random() * 3) + 1;
-            
-            // Randomizing a secondary shape
-            const shapes = [
-                `<div class="absolute w-48 h-48 rounded-full" style="background:${primaryColor}; top: ${Math.random()*60}%; left: ${Math.random()*50}%; mix-blend-mode: multiply;"></div>`,
-                `<div class="absolute w-full h-32" style="background:${primaryColor}; bottom: ${Math.random()*40}%; left: 0; transform: skewY(${Math.random()*20 - 10}deg);"></div>`,
-                `<div class="absolute w-1 h-full bg-zinc-900" style="left: ${Math.random()*80}%;"></div>`
+            // Randomly choose a grid template class
+            const gridClass = `grid-style-${Math.floor(Math.random() * 3) + 1}`;
+            target.className = `poster-grid ${gridClass}`;
+
+            // Define different "Content Modules"
+            const modules = [
+                `<div class="col-span-full border-b-4 border-zinc-900 pb-2">
+                    <h1 class="swiss-headline text-6xl uppercase font-black">${text}</h1>
+                </div>`,
+                
+                `<div class="placeholder-img h-full w-full"></div>`,
+                
+                `<div class="flex flex-col justify-end">
+                    <p class="text-[9px] font-bold leading-tight uppercase">
+                        Structure and organization.<br>The modular grid is a tool for the objective designer.
+                    </p>
+                </div>`,
+                
+                `<div class="bg-zinc-900 text-white p-4 flex flex-col justify-between">
+                    <span class="text-[8px] font-bold uppercase tracking-widest">Data Module</span>
+                    <span class="text-3xl font-black">0${Math.floor(Math.random()*9)}</span>
+                </div>`,
+
+                `<div class="col-span-1 border-t border-zinc-300 pt-2">
+                    <p class="text-[8px] uppercase font-bold text-zinc-400">Section A</p>
+                    <div class="h-1 w-full bg-red-500 mt-1"></div>
+                </div>`
             ];
-            
-            target.innerHTML = `
-                <div class="relative h-full flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <p class="text-[10px] font-bold tracking-widest uppercase">Typographic Series<br>No. ${Math.floor(Math.random()*999)}</p>
-                        <p class="text-[10px] font-bold text-right uppercase">Zürich<br>2026</p>
-                    </div>
 
-                    ${shapes[Math.floor(Math.random() * shapes.length)]}
-
-                    <h1 class="swiss-headline text-8xl font-black uppercase z-20 ${randomAlign}" style="color: ${Math.random() > 0.5 ? '#18181b' : primaryColor}">
-                        ${headline}
-                    </h1>
-
-                    <div class="flex justify-between items-end border-t-4 border-zinc-900 pt-4">
-                        <p class="text-xs font-bold uppercase w-1/2">International Style / Functionalism</p>
-                        <div class="w-12 h-12 rounded-sm" style="background:${primaryColor}"></div>
-                    </div>
-                </div>
-            `;
+            // Shuffle and pick 4-5 modules to fill the grid
+            const shuffled = modules.sort(() => 0.5 - Math.random());
+            target.innerHTML = shuffled.slice(0, 4).join('');
         }
 
         // Initialize
-        document.getElementById('headlineInput').addEventListener('input', generateLayout);
-        generateLayout();
+        generate();
     </script>
 </body>
 </html>
