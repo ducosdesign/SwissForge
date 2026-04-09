@@ -6,18 +6,44 @@
     <title>SwissForge | Layout Inspector</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* Global Typography Rules */
         body { font-family: 'Space Grotesk', sans-serif; }
-        .swiss-headline { font-family: 'Inter', sans-serif; line-height: 0.9; letter-spacing: -0.04em; }
-        .poster-grid { display: grid; gap: 1.5rem; height: 100%; width: 100%; }
+        .swiss-headline { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 0.9; 
+            letter-spacing: -0.04em; 
+        }
+
+        /* Core Grid Engine: Handles the parent container of the generated poster */
+        .poster-grid { 
+            display: grid; 
+            gap: 1.5rem; 
+            height: 100%; 
+            width: 100%; 
+        }
         
-        /* Grid Template Library */
+        /* MATHEMATICAL GRID TEMPLATES 
+           These classes define the 'Invisible Skeleton' of Swiss Design.
+        */
         .grid-style-1 { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; }
         .grid-style-2 { grid-template-columns: 1fr 2fr; grid-template-rows: 1fr 1fr; }
         .grid-style-3 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto 1fr; }
 
-        .placeholder-img { background-color: #e5e7eb; position: relative; border: 1px solid #d1d5db; }
-        .poster-canvas { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* Styling for the generative image placeholders */
+        .placeholder-img { 
+            background-color: #e5e7eb; 
+            position: relative; 
+            border: 1px solid #d1d5db; 
+        }
+
+        /* Smooth transitions for the generative re-layout animation */
+        .poster-canvas { 
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+
+        /* Custom scrollbar for the Inspector UI */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #18181b; }
     </style>
@@ -73,20 +99,32 @@
     </aside>
 
     <script>
+        /**
+         * ARRAY: Design Theory Strings
+         * These are mapped to the 3 grid templates to explain the computational design logic.
+         */
         const explainers = [
             "This layout uses a 2-column split with a priority header. It balances heavy typography against negative space to create a 'top-down' visual hierarchy typical of 1950s Swiss posters.",
             "A 1:2 asymmetric ratio. By offsetting the main focal point to the right, we create a dynamic tension that guides the eye from the secondary data points toward the main headline.",
             "Modular 3-column architecture. This grid is highly functional, allowing for multiple disparate information blocks to coexist without feeling cluttered or unorganized."
         ];
 
+        /**
+         * MAIN FUNCTION: generate()
+         * This acts as the Agentic Engine. It selects a grid, shuffles content, and calculates the layout.
+         */
         function generate() {
             const text = document.getElementById('mainText').value || "SWISS";
             const target = document.getElementById('gridTarget');
+            // Randomly pick a grid index (0, 1, or 2)
             const index = Math.floor(Math.random() * 3);
             
-            // 1. Update Layout
+            // 1. GRID SELECTION
+            // Apply the randomized grid template class to the target div
             target.className = `poster-grid grid-style-${index + 1}`;
             
+            // 2. MODULE LIBRARY
+            // A pool of potential Swiss content modules that can be injected into the grid
             const modules = [
                 `<div class="col-span-full border-b-4 border-zinc-900 pb-2"><h1 class="swiss-headline text-5xl uppercase font-black">${text}</h1></div>`,
                 `<div class="placeholder-img h-full w-full"></div>`,
@@ -94,23 +132,32 @@
                 `<div class="bg-red-600 text-white p-4 flex flex-col justify-between"><span class="text-[8px] font-bold uppercase tracking-widest">Module 01</span><span class="text-3xl font-black">CH</span></div>`
             ];
 
+            // 3. SHUFFLE LOGIC
+            // Shuffle the modules and take the first 4 to create a unique asymmetric layout every time
             const shuffled = modules.sort(() => 0.5 - Math.random()).slice(0, 4);
             const htmlString = shuffled.join('');
             target.innerHTML = htmlString;
 
-            // 2. Update Explainer
+            // 4. UI UPDATE
+            // Sync the Inspector's theoretical explainer with the chosen layout
             document.getElementById('layoutExplainer').innerText = explainers[index];
 
-            // 3. Update Code Snippet
+            // 5. CODE GENERATION
+            // Construct a clean, self-contained HTML block for the user to copy
             const fullCode = `<div class="swiss-poster" style="display:grid; gap:20px; width:400px; height:560px; background:white; padding:30px; border:1px solid #ddd; font-family:sans-serif;">\n  ${htmlString.replace(/></g, '>\n  <')}\n</div>`;
             document.getElementById('codeSnippet').innerText = fullCode;
         }
 
+        /**
+         * HELPER: copyCode()
+         * Uses the Navigator API to copy the generated layout HTML to the user's clipboard.
+         */
         function copyCode() {
             navigator.clipboard.writeText(document.getElementById('codeSnippet').innerText);
-            alert("Layout HTML copied!");
+            alert("Layout HTML copied to clipboard!");
         }
 
+        // Initialize the first layout on page load
         generate();
     </script>
 </body>
