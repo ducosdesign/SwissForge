@@ -3,47 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SwissForge | Layout Inspector</title>
+    <title>SwissForge | Infinite Grid Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* Global Typography Rules */
-        body { font-family: 'Space Grotesk', sans-serif; }
-        .swiss-headline { 
-            font-family: 'Inter', sans-serif; 
-            line-height: 0.9; 
-            letter-spacing: -0.04em; 
-        }
-
-        /* Core Grid Engine: Handles the parent container of the generated poster */
-        .poster-grid { 
-            display: grid; 
-            gap: 1.5rem; 
-            height: 100%; 
-            width: 100%; 
-        }
+        body { font-family: 'Space Grotesk', sans-serif; transition: background 0.5s; }
+        .swiss-headline { font-family: 'Inter', sans-serif; line-height: 0.85; letter-spacing: -0.05em; }
+        .vertical-text { writing-mode: vertical-rl; text-orientation: mixed; }
         
-        /* MATHEMATICAL GRID TEMPLATES 
-           These classes define the 'Invisible Skeleton' of Swiss Design.
-        */
-        .grid-style-1 { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; }
-        .grid-style-2 { grid-template-columns: 1fr 2fr; grid-template-rows: 1fr 1fr; }
-        .grid-style-3 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto 1fr; }
+        /* THE EXPANDED GRID LIBRARY (8 STYLES) */
+        .poster-grid { display: grid; gap: 1rem; height: 100%; width: 100%; }
 
-        /* Styling for the generative image placeholders */
-        .placeholder-img { 
-            background-color: #e5e7eb; 
-            position: relative; 
-            border: 1px solid #d1d5db; 
-        }
+        /* 1. Classic Split */ .grid-style-1 { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; }
+        /* 2. Asymmetric 1:2 */ .grid-style-2 { grid-template-columns: 1fr 2fr; grid-template-rows: 1fr 1fr; }
+        /* 3. Triple Column */ .grid-style-3 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto 1fr; }
+        /* 4. Quad Column */ .grid-style-4 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); }
+        /* 5. Golden Ratio (Phi) */ .grid-style-5 { grid-template-columns: 1.618fr 1fr; grid-template-rows: 1fr 1.618fr; }
+        /* 6. High Tension Vertical */ .grid-style-6 { grid-template-columns: 40px 1fr 1fr; grid-template-rows: 1fr; }
+        /* 7. The Cross */ .grid-style-7 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+        /* 8. Dense Modular */ .grid-style-8 { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto 1fr; }
 
-        /* Smooth transitions for the generative re-layout animation */
-        .poster-canvas { 
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
-
-        /* Custom scrollbar for the Inspector UI */
+        .placeholder-img { background-color: #f4f4f5; border: 1px solid #e4e4e7; position: relative; }
+        .poster-canvas { transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #18181b; }
     </style>
@@ -51,113 +32,103 @@
 <body class="bg-zinc-200 text-zinc-900 h-screen flex">
 
     <aside class="w-72 border-r border-zinc-300 bg-white p-6 flex flex-col shadow-xl z-20">
-        <h1 class="text-xl font-black italic tracking-tighter mb-8">SWISSFORGE</h1>
+        <h1 class="text-xl font-black italic tracking-tighter mb-8">SWISSFORGE ∞</h1>
         
         <div class="space-y-6 flex-1">
             <div>
                 <label class="text-[10px] font-bold uppercase text-zinc-400 block mb-2">Headline</label>
-                <input type="text" id="mainText" value="GRID SYSTEM" class="w-full border-b-2 border-zinc-900 py-2 text-sm font-bold outline-none uppercase">
+                <input type="text" id="mainText" value="OBJECTIVE" class="w-full border-b-2 border-zinc-900 py-2 text-sm font-bold outline-none uppercase focus:border-red-500 transition-colors">
             </div>
-            <button onclick="generate()" class="w-full bg-zinc-900 text-white py-3 rounded-lg font-bold hover:bg-black transition-all shadow-lg active:scale-95">
-                GENERATE NEW
+            <button onclick="generate()" class="w-full bg-zinc-900 text-white py-4 rounded-lg font-bold hover:bg-black transition-all shadow-xl active:scale-95">
+                GENERATE LAYOUT
             </button>
         </div>
 
         <div class="pt-6 border-t border-zinc-100">
-            <h3 class="text-[10px] font-black uppercase text-zinc-400 mb-4">Core Principles</h3>
-            <ul class="text-[10px] text-zinc-500 space-y-2 leading-relaxed">
-                <li>• <b>Mathematical Grid:</b> Structure over intuition.</li>
-                <li>• <b>Asymmetric Balance:</b> Tension creates interest.</li>
-                <li>• <b>San-Serif Only:</b> Clarity and objectivity.</li>
-            </ul>
+            <p class="text-[9px] text-zinc-400 leading-relaxed uppercase font-bold tracking-widest">Grid Engine Active: 8 Templates / 10 Modules</p>
         </div>
     </aside>
 
     <main class="flex-1 flex items-center justify-center p-8 bg-zinc-100 relative">
-        <div id="poster" class="poster-canvas w-[400px] h-[560px] bg-white shadow-2xl p-8 border border-zinc-200 relative">
+        <div id="poster" class="poster-canvas w-[420px] h-[580px] bg-white shadow-2xl p-6 border border-zinc-200 relative overflow-hidden">
             <div id="gridTarget" class="poster-grid"></div>
         </div>
     </main>
 
     <aside class="w-80 border-l border-zinc-300 bg-zinc-50 p-6 flex flex-col shadow-xl z-20">
-        <h3 class="text-[10px] font-black uppercase text-zinc-400 mb-6 tracking-widest">Layout Inspector</h3>
+        <h3 class="text-[10px] font-black uppercase text-zinc-400 mb-4 tracking-widest">Technical Breakdown</h3>
         
-        <div class="mb-8 p-4 bg-white border border-zinc-200 rounded-lg">
-            <h4 class="text-xs font-bold mb-2 uppercase">Design Logic</h4>
-            <p id="layoutExplainer" class="text-[11px] text-zinc-600 leading-relaxed italic"></p>
+        <div class="mb-6 p-4 bg-white border border-zinc-200 rounded-lg">
+            <h4 class="text-xs font-bold mb-1 uppercase text-red-600">Grid Geometry</h4>
+            <p id="gridName" class="text-[11px] font-bold text-zinc-800 mb-2"></p>
+            <p id="layoutExplainer" class="text-[10px] text-zinc-500 leading-relaxed italic"></p>
         </div>
 
         <div class="flex-1 flex flex-col">
             <div class="flex justify-between items-center mb-2">
-                <span class="text-[10px] font-bold text-zinc-400 uppercase">Generated Code</span>
-                <button onclick="copyCode()" class="text-[9px] bg-zinc-900 text-white px-2 py-1 rounded">COPY</button>
+                <span class="text-[10px] font-bold text-zinc-400 uppercase">Production Snippet</span>
+                <button onclick="copyCode()" class="text-[9px] bg-zinc-900 text-white px-3 py-1 rounded-full">COPY</button>
             </div>
-            <div class="flex-1 bg-zinc-900 rounded-lg p-4 overflow-auto font-mono text-[10px] text-zinc-400 border border-zinc-800">
+            <div class="flex-1 bg-zinc-900 rounded-lg p-4 overflow-auto font-mono text-[9px] text-zinc-500 border border-zinc-800">
                 <pre id="codeSnippet" class="whitespace-pre-wrap"></pre>
             </div>
         </div>
     </aside>
 
     <script>
-        /**
-         * ARRAY: Design Theory Strings
-         * These are mapped to the 3 grid templates to explain the computational design logic.
-         */
-        const explainers = [
-            "This layout uses a 2-column split with a priority header. It balances heavy typography against negative space to create a 'top-down' visual hierarchy typical of 1950s Swiss posters.",
-            "A 1:2 asymmetric ratio. By offsetting the main focal point to the right, we create a dynamic tension that guides the eye from the secondary data points toward the main headline.",
-            "Modular 3-column architecture. This grid is highly functional, allowing for multiple disparate information blocks to coexist without feeling cluttered or unorganized."
+        const gridData = [
+            { name: "Split Architecture", desc: "A 50/50 division of space. Ideal for comparing form and content." },
+            { name: "The Asymmetric Third", desc: "Uses a 1:2 offset to create visual tension and directed eye-flow." },
+            { name: "Triple Module", desc: "A mathematically rigid 3-column system for high-density information." },
+            { name: "Quadratic Matrix", desc: "A 4x4 grid system. Total modularity for brutalist composition." },
+            { name: "Phi / Golden Ratio", desc: "Proportions based on 1.618. Naturally balanced and harmonic." },
+            { name: "Vertical Axis", desc: "Forceful vertical orientation using a narrow left-hand margin anchor." },
+            { name: "The Cross Split", desc: "Quad-quadrant balance. Focuses the viewer on the central intersection." },
+            { name: "Modular Sequence", desc: "A dense, stacked system mimicking modernist Swiss editorial design." }
         ];
 
-        /**
-         * MAIN FUNCTION: generate()
-         * This acts as the Agentic Engine. It selects a grid, shuffles content, and calculates the layout.
-         */
         function generate() {
             const text = document.getElementById('mainText').value || "SWISS";
             const target = document.getElementById('gridTarget');
-            // Randomly pick a grid index (0, 1, or 2)
-            const index = Math.floor(Math.random() * 3);
+            const index = Math.floor(Math.random() * gridData.length);
             
-            // 1. GRID SELECTION
-            // Apply the randomized grid template class to the target div
+            // Apply Randomized Grid Style
             target.className = `poster-grid grid-style-${index + 1}`;
             
-            // 2. MODULE LIBRARY
-            // A pool of potential Swiss content modules that can be injected into the grid
+            // EXPANDED MODULE POOL (10 Modules)
             const modules = [
-                `<div class="col-span-full border-b-4 border-zinc-900 pb-2"><h1 class="swiss-headline text-5xl uppercase font-black">${text}</h1></div>`,
-                `<div class="placeholder-img h-full w-full"></div>`,
-                `<div class="flex flex-col justify-end"><p class="text-[9px] font-bold uppercase">The Grid System is an aid, not a guarantee. It permits a number of possible uses.</p></div>`,
-                `<div class="bg-red-600 text-white p-4 flex flex-col justify-between"><span class="text-[8px] font-bold uppercase tracking-widest">Module 01</span><span class="text-3xl font-black">CH</span></div>`
+                `<div class="col-span-full border-b-[6px] border-zinc-900 pb-2"><h1 class="swiss-headline text-6xl uppercase font-black">${text}</h1></div>`,
+                `<div class="placeholder-img h-full w-full min-h-[100px]"><div class="absolute inset-4 border border-zinc-300"></div></div>`,
+                `<div class="flex flex-col justify-between p-2 bg-red-600 text-white"><span class="text-[8px] font-bold uppercase">Section 01</span><span class="text-4xl font-black italic">CH</span></div>`,
+                `<div class="flex items-center"><p class="text-[9px] font-bold uppercase leading-none border-l-2 border-zinc-900 pl-2">Design is a structured<br>exploration of space.</p></div>`,
+                `<div class="vertical-text flex items-center justify-center font-black text-4xl border-x border-zinc-100 uppercase py-4">${text}</div>`,
+                `<div class="col-span-1 row-span-1 bg-zinc-900 rounded-full w-12 h-12 self-center justify-self-center"></div>`,
+                `<div class="col-span-full flex justify-between items-end border-t border-zinc-900 pt-2"><p class="text-[7px] uppercase font-bold text-zinc-400">Computational Layout Engine v6.0</p><p class="text-[7px] uppercase font-bold text-zinc-900">Basel / Zurich</p></div>`,
+                `<div class="placeholder-img flex items-center justify-center"><div class="w-2/3 h-[1px] bg-zinc-300 rotate-45 absolute"></div><div class="w-2/3 h-[1px] bg-zinc-300 -rotate-45 absolute"></div></div>`,
+                `<div class="col-span-2 p-2"><p class="text-[8px] leading-tight text-zinc-500">The modernist movement was characterized by the use of asymmetric layouts, use of a grid, and sans-serif typefaces like Akzidenz-Grotesk.</p></div>`,
+                `<div class="bg-zinc-100 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest">Module Info</div>`
             ];
 
-            // 3. SHUFFLE LOGIC
-            // Shuffle the modules and take the first 4 to create a unique asymmetric layout every time
-            const shuffled = modules.sort(() => 0.5 - Math.random()).slice(0, 4);
+            // Shuffle and pick 5-7 modules (increased density)
+            const shuffled = modules.sort(() => 0.5 - Math.random()).slice(0, 6);
             const htmlString = shuffled.join('');
             target.innerHTML = htmlString;
 
-            // 4. UI UPDATE
-            // Sync the Inspector's theoretical explainer with the chosen layout
-            document.getElementById('layoutExplainer').innerText = explainers[index];
+            // Update Inspector
+            document.getElementById('gridName').innerText = gridData[index].name;
+            document.getElementById('layoutExplainer').innerText = gridData[index].desc;
 
-            // 5. CODE GENERATION
-            // Construct a clean, self-contained HTML block for the user to copy
-            const fullCode = `<div class="swiss-poster" style="display:grid; gap:20px; width:400px; height:560px; background:white; padding:30px; border:1px solid #ddd; font-family:sans-serif;">\n  ${htmlString.replace(/></g, '>\n  <')}\n</div>`;
+            // Update Code Snippet
+            const cleanHtml = htmlString.replace(/class="/g, 'style="').replace(/col-span-full/g, 'grid-column: span 1 / -1;');
+            const fullCode = `<div class="swiss-grid" style="display:grid; gap:16px; width:420px; height:580px; padding:24px; background:white; border:1px solid #ddd;">\n  ${htmlString.replace(/></g, '>\n  <')}\n</div>`;
             document.getElementById('codeSnippet').innerText = fullCode;
         }
 
-        /**
-         * HELPER: copyCode()
-         * Uses the Navigator API to copy the generated layout HTML to the user's clipboard.
-         */
         function copyCode() {
             navigator.clipboard.writeText(document.getElementById('codeSnippet').innerText);
-            alert("Layout HTML copied to clipboard!");
+            alert("Code Copied!");
         }
 
-        // Initialize the first layout on page load
         generate();
     </script>
 </body>
